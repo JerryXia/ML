@@ -1,0 +1,39 @@
+﻿using System;
+using System.IO;
+
+namespace ML
+{
+    public class Global
+    {
+        #region
+
+        /// <summary>
+        /// App and Web Directory
+        /// </summary>
+        public static string AppWebDir
+        {
+            get
+            {
+                //string s = System.Web.HttpRuntime.AppDomainAppPath;
+
+                /*                             win  mac  unix
+                 *   AltDirectorySeparatorChar  /    /     \
+                 *   DirectorySeparatorChar     \    \     /
+                 *   PathSeparator              ;           
+                 *   VolumeSeparatorChar        :    :     /
+                 */
+                return System.AppDomain.CurrentDomain.BaseDirectory.TrimEnd(new char[] { Path.DirectorySeparatorChar });
+            }
+        }
+
+        public static string App_DataDir
+        {
+            get
+            {
+                return Path.Combine(AppWebDir, "App_Data");
+            }
+        }
+
+        #endregion
+    }
+}

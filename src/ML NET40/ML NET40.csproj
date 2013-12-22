@@ -31,6 +31,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
@@ -40,8 +43,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\SysConfig.cs" />
+    <Compile Include="Control\CssMinifier.cs" />
+    <Compile Include="Control\Include.cs" />
+    <Compile Include="Control\JavaScriptMinifier.cs" />
     <Compile Include="Data\AccessHelper.cs" />
     <Compile Include="Data\SqlHelper.cs" />
+    <Compile Include="Data\SqlMapper.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="IO\FileHelper.cs" />
     <Compile Include="Mono.Data.SqliteClient\Sqlite.cs" />
@@ -51,9 +58,7 @@
     <Compile Include="Mono.Data.SqliteClient\SqliteConnection.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteConnectionFactory.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteConnectionStringBuilder.cs" />
-    <Compile Include="Mono.Data.SqliteClient\SqliteDataAdapter.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Mono.Data.SqliteClient\SqliteDataAdapter.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteDataReader.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteDataSourceEnumerator.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteExceptions.cs" />
@@ -66,8 +71,14 @@
     <Compile Include="Mono.Data.SqliteClient\SqliteTransaction.cs" />
     <Compile Include="Net\EmailHelper.cs" />
     <Compile Include="Net\HttpHelper.cs" />
+    <Compile Include="Net\HttpLib\HttpVerb.cs" />
+    <Compile Include="Net\HttpLib\NamedFileStream.cs" />
+    <Compile Include="Net\HttpLib\Request.cs" />
+    <Compile Include="Net\HttpLib\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\AESCryption.cs" />
+    <Compile Include="Security\BCEngine.cs" />
+    <Compile Include="Security\CommonCrypt.cs" />
     <Compile Include="Security\DESCryption.cs" />
     <Compile Include="Security\MD5Cryption.cs" />
     <Compile Include="Security\RSACryption.cs" />
@@ -85,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Caching\" />
-    <Folder Include="Control\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

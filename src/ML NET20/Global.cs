@@ -34,6 +34,8 @@ namespace ML
             }
         }
 
+        public static System.Text.Encoding UTF8 = System.Text.Encoding.UTF8;
+
         #endregion
     }
 }

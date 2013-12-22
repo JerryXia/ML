@@ -9,4 +9,5 @@ REM SET BUILD=Debug
 SET BUILD=Release
 
 xcopy "%~dp0ML NET40\bin\%BUILD%\*.dll" "%~dp0TempTest\bin\Debug" /F /R /Y
+xcopy "%~dp0ML NET20\bin\%BUILD%\*.dll" "%~dp0TestForNET20\bin\Debug" /F /R /Y
 pause

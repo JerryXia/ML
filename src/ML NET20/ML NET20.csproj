@@ -64,7 +64,9 @@
     <Compile Include="Mono.Data.SqliteClient\SqliteConnection.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteConnectionFactory.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteConnectionStringBuilder.cs" />
-    <Compile Include="Mono.Data.SqliteClient\SqliteDataAdapter.cs" />
+    <Compile Include="Mono.Data.SqliteClient\SqliteDataAdapter.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Mono.Data.SqliteClient\SqliteDataReader.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteDataSourceEnumerator.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteExceptions.cs" />

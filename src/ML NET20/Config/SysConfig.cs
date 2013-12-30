@@ -20,9 +20,22 @@ namespace ML.Config
             return i;
         }
 
+        public static double GetConfigDoubleVal(string key)
+        {
+            double i = 0.00;
+            Double.TryParse(GetConfigVal(key), out i);
+            return i;
+        }
+
         public static string GetConnectionString(string key)
         {
             return System.Configuration.ConfigurationManager.ConnectionStrings[key].ConnectionString;
         }
+
+        public static object GetSection(string key)
+        {
+            return System.Configuration.ConfigurationManager.GetSection(key);
+        }
+
     }
 }

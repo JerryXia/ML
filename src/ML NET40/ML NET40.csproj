@@ -34,21 +34,26 @@
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
-    <Reference Include="System.configuration" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Web" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CacheHelper.cs" />
     <Compile Include="Config\SysConfig.cs" />
     <Compile Include="Control\CssMinifier.cs" />
     <Compile Include="Control\Include.cs" />
     <Compile Include="Control\JavaScriptMinifier.cs" />
     <Compile Include="Data\AccessHelper.cs" />
+    <Compile Include="Data\SqlBuilder.cs" />
     <Compile Include="Data\SqlHelper.cs" />
     <Compile Include="Data\SqlMapper.cs" />
+    <Compile Include="Data\SqlMapperExtensions.cs" />
     <Compile Include="Global.cs" />
     <Compile Include="IO\FileHelper.cs" />
     <Compile Include="Mono.Data.SqliteClient\Sqlite.cs" />
@@ -58,7 +63,9 @@
     <Compile Include="Mono.Data.SqliteClient\SqliteConnection.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteConnectionFactory.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteConnectionStringBuilder.cs" />
-    <Compile Include="Mono.Data.SqliteClient\SqliteDataAdapter.cs" />
+    <Compile Include="Mono.Data.SqliteClient\SqliteDataAdapter.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Mono.Data.SqliteClient\SqliteDataReader.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteDataSourceEnumerator.cs" />
     <Compile Include="Mono.Data.SqliteClient\SqliteExceptions.cs" />
@@ -94,9 +101,7 @@
     <Compile Include="Xml\XmlHelper.cs" />
     <Compile Include="Xml\XmlSerialization.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Caching\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

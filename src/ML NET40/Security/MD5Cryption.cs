@@ -8,7 +8,7 @@ namespace ML.Security
     public class MD5Cryption
     {
         const int BufferSize = 1048576;//8192;
-        static MD5CryptoServiceProvider md5ServiceProvider = new MD5CryptoServiceProvider();
+        static readonly MD5CryptoServiceProvider md5ServiceProvider = new MD5CryptoServiceProvider();
 
 
         public static byte[] ComputeHash(string originStr)
@@ -65,7 +65,7 @@ namespace ML.Security
         }
         static string MD5(byte[] byteData)
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new StringBuilder(byteData.Length * 2);
             foreach (byte b in byteData)
             {
                 sb.AppendFormat("{0:x2}", b);

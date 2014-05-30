@@ -84,6 +84,8 @@
     <Compile Include="Net\HttpLib\Request.cs" />
     <Compile Include="Net\HttpLib\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="QQWry.Net\IPLocation.cs" />
+    <Compile Include="QQWry.Net\QQWryLocator.cs" />
     <Compile Include="Security\AESCryption.cs" />
     <Compile Include="Security\BCEngine.cs" />
     <Compile Include="Security\CommonCrypt.cs" />

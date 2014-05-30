@@ -171,11 +171,11 @@ namespace ML.Caching
         /// <summary>
         /// Cache Key的集合
         /// </summary>
-        public static List<string> CacheKeys
+        public static IEnumerable<string> CacheKeys
         {
             get
             {
-                return _cacheDefault.Select(kvp => kvp.Key).ToList();
+                return _cacheDefault.Select(kvp => kvp.Key);
             }
         }
 

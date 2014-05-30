@@ -123,16 +123,16 @@ namespace ML.IO
 
         public static string ReaderString(string fileName)
         {
-            return ReaderString(fileName, Encoding.UTF8);
+            return ReaderString(fileName, Global.UTF8);
         }
 
         public static string ReaderString(string fileName, Encoding encode)
         {
             string result;
-            using (StreamReader streamReader = new StreamReader(fileName, encode))
-            {
-                result = streamReader.ReadToEnd();
-            }
+            StreamReader streamReader = new StreamReader(fileName, encode);
+            result = streamReader.ReadToEnd();
+            streamReader.Close();
+            streamReader.Dispose();
             return result;
         }
 
@@ -154,13 +154,12 @@ namespace ML.IO
             }
             else
             {
-                using (FileStream fs = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.Write))
-                {
-                    sw = new StreamWriter(fs);
-                }
+                sw = File.AppendText(filePath);
+                sw.WriteLine("[" + DateTime.Now.ToString(dateFormater) + "]" + content);
             }
-            sw.WriteLine("[" + DateTime.Now.ToString(dateFormater) + "]" + content);
+            sw.Flush();
             sw.Close();
+            sw.Dispose();
         }
 
         public static void WriteString(string filePath, string content)
@@ -172,13 +171,12 @@ namespace ML.IO
             }
             else
             {
-                using (FileStream fs = new FileStream(filePath, FileMode.Append, FileAccess.Write, FileShare.Write))
-                {
-                    sw = new StreamWriter(fs);
-                }
+                sw = File.AppendText(filePath);
             }
             sw.Write(content);
+            sw.Flush();
             sw.Close();
+            sw.Dispose();
         }
 
         #endregion

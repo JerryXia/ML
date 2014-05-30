@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,13 +13,20 @@ using ML.Config;
 using ML.Xml;
 using ML.Utility;
 using ML.Security;
+using System.Runtime.ConstrainedExecution;
+using System.Security;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 namespace TempTest
 {
     class Program
     {
+        static TrieFilter tf = new TrieFilter();
+
         static void Main(string[] args)
         {
+            #region 1
 
             //Console.WriteLine(Global.AppWebDir);
             //Console.WriteLine(Global.App_DataDir);
@@ -57,13 +65,31 @@ namespace TempTest
             string s4 = CommonCrypt.DESDecryption(s3, "abc");
             Console.WriteLine(s3 + "-----" + s4);
 
+            #endregion
+
+            #region badwords
+            string str = "";
+            str += "法论功 法 轮 功  法轮功 我操 我草 fuck";
+
+            string filePath = @"D:\TDDOWNLOAD\badwords.txt";
+            string testString = string.Empty;
+            System.IO.StreamReader sr = new System.IO.StreamReader(filePath, Global.UTF8);
+            testString = sr.ReadToEnd();
+            sr.Close();
+            sr.Dispose();
+
+            tf.AddKey(testString.Split('|'));
+
+            Console.WriteLine(tf.Replace(str)); 
+            #endregion
+
+
             Console.ReadKey();
         }
+
+
+
     }
 
-    //public class TestRunOption : IRunOptions
-    //{
-        //public string Name { get; set; }
-       // public int Age { get; set; }
-    //}
+
 }

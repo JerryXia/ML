@@ -30,18 +30,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BouncyCastle.Crypto">
-      <HintPath>..\lib\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Net\Http\HttpRequestDataMode.cs" />
+    <Compile Include="Net\Http\HttpRequest.cs" />
+    <Compile Include="Net\Http\HttpRequestMethod.cs" />
+    <Compile Include="Net\Http\HttpRequestSetting.cs" />
+    <Compile Include="Net\Http\HttpResponse.cs" />
+    <Compile Include="Net\Http\HttpResponseDataType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="CustomRandom.cs" />
-    <Compile Include="Security\Cryptography\BCEngine.cs" />
+    <Compile Include="Utils\CookieParse.cs" />
+    <Compile Include="Utils\CustomRandom.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Security\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

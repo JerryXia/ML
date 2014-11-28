@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace ML.Net
+namespace ML.Net.Http
 {
     public class HttpResponse
     {

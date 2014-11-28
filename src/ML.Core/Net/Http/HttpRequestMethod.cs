@@ -1,4 +1,4 @@
-﻿namespace ML.Net
+﻿namespace ML.Net.Http
 {
     public enum HttpRequestMethod
     {

@@ -6,7 +6,7 @@ using System.Net.Security;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
-namespace ML.Net
+namespace ML.Net.Http
 {
     public class HttpRequest
     {

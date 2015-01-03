@@ -35,6 +35,8 @@ namespace One
             Console.WriteLine(p1.GetHashCode());
             Console.WriteLine(p2.GetHashCode());
 
+
+
             Console.ReadKey();
         }
     }
@@ -80,6 +82,8 @@ namespace One
         {
             s2.Name += s1.Name;
             return s2;
+
+
         }
 
     }

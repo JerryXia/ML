@@ -3,7 +3,7 @@ REM %WINDIR%\Microsoft.NET\Framework\v2.0.50727\msbuild "%~dp0ML.Drawing NET20\M
 REM %WINDIR%\Microsoft.NET\Framework\v2.0.50727\msbuild "%~dp0ML.WinForm NET20\ML.WinForm NET20.csproj
 REM %WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild "%~dp0ML NET40\ML NET40.csproj"
 
-%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild "MLProject.sln"
+%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild "MLProject-VS2012.sln"
 
 REM SET BUILD=Debug
 SET BUILD=Release

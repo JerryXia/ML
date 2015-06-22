@@ -1,18 +1,8 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
-
-using System.IO;
-
-using ML.Net.Http;
 using System.Net;
-using System.Drawing;
-
+using System.Text;
+using ML.Net.Http;
+using ML.Security;
 
 namespace TempTest
 {
@@ -37,7 +27,7 @@ namespace TempTest
             //Console.WriteLine(testRunOption2.Name);
             //while(true)
             //{
-                
+
             //}
 
             //CodeTimer.Time("Thread Sleep", 1, () => { Thread.Sleep(3000); });
@@ -53,7 +43,9 @@ namespace TempTest
 
             #endregion
 
+            #region 2
 
+            /*
             //首次访问
             string url = "https://sh.ac.10086.cn/login";
             HttpRequestWrapper httpWraper = new HttpRequestWrapper(url, HttpRequestMethod.GET, Encoding.UTF8);
@@ -142,6 +134,94 @@ namespace TempTest
                     //Console.WriteLine();
                 }
             }
+            */
+
+            #endregion
+
+            #region 3
+            /*
+            string template = "\"Category\":\"{0}\", \"Name\":\"{1}\", \"GI\":{2}";
+
+            var sb = new System.Text.StringBuilder();
+
+            string[] lines = File.ReadAllLines("D:/1.txt");
+            foreach (string line in lines)
+            {
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    var match = Regex.Match(line.Trim(), @"(\w+)\s{1,3}(\w+)\s{1,3}(\d+)", RegexOptions.Multiline);
+                    if (match.Success)
+                    {
+                        string category = match.Groups[1].Value;
+                        string name = match.Groups[2].Value;
+                        int gi = Convert.ToInt32(match.Groups[3].Value);
+
+                        sb.Append("{");
+                        sb.AppendFormat(template, category, name, gi);
+                        sb.Append("}," + System.Environment.NewLine);
+                    }
+                }
+            }
+
+            File.WriteAllText("d:/2.txt", sb.ToString());
+            return;
+            */
+            #endregion
+
+            #region 4
+            /*
+            var p = new ML.Utils.Processor();
+            Console.WriteLine("       PROCESSOR INFORMATION\r\n       ~~~~~~~~~~~~~~~~~~~~~");
+            Console.WriteLine("Name:     " + p.Name);
+            Console.WriteLine("Vendor:   " + p.Vendor);
+            Console.WriteLine("          " + string.Format("Family {0} Model {1} Stepping {2}", p.Family, p.Model, p.Stepping));
+            try
+            {
+                Console.WriteLine("Serial:   " + p.Serial.ToString());
+            }
+            catch
+            {
+                Console.WriteLine("Serial:   [NONE]");
+            }
+            ML.Utils.ProcessorFeatures f = p.Features;
+            int iv = 1;
+            string feat = "";
+            for (int i = 0; i < 31; i++)
+            {
+                if (((int)f & iv) != 0)
+                    feat += ((ML.Utils.ProcessorFeatures)iv).ToString() + ",";
+                iv <<= 1;
+            }
+            if (p.Has3DNow())
+                feat += "3D Now!,";
+            if (p.Has3DNowExt())
+                feat += "3D Now! extensions";
+            if (feat.Length > 0)
+                Console.WriteLine("Features: " + feat.TrimEnd('\r', '\n', ','));
+            Console.ReadLine();
+            */
+            #endregion
+
+            #region 5
+
+            /*
+            CodeTimer.Initialize();
+
+            CodeTimer.Time("Random", 1000 * 1000, () =>
+            {
+                var random = new Random();
+                random.Next(10000000);
+            });
+
+            CodeTimer.Time("RealRandom", 1000 * 1000, () =>
+            {
+                var random = new RealRandom();
+                random.Next(10000000);
+            });
+            */
+            #endregion
+
+            TestSecurity();
 
             Console.ReadKey();
         }
@@ -152,14 +232,40 @@ namespace TempTest
             return Convert.ToInt64((time - origin).TotalMilliseconds);
         }
 
+
+        static void TestSecurity()
+        {
+            var plainText = "i`m JerryXia";
+            string key = "~!@#$%^&*()";
+
+            string cliperText = AesCryptoService.EncryptBase64(plainText, key);
+            string plainText1 = null;
+            bool decryptSuccess = AesCryptoService.DecryptBase64(cliperText, key, out plainText1);
+
+            Console.WriteLine(plainText);
+            Console.WriteLine(cliperText);
+            Console.WriteLine(plainText1);
+
+
+            string cliperText1 = AesCryptoService.Encrypt(plainText, key);
+            string plainText2 = null;
+            bool decryptSuccess2 = AesCryptoService.Decrypt(cliperText1, key, out plainText2);
+
+            Console.WriteLine(plainText);
+            Console.WriteLine(cliperText1);
+            Console.WriteLine(plainText2);
+
+
+        }
+
     }
 
     class SsoLoginCallback
     {
-        public string brand {get;set;}
-        public string result {get;set;}
-        public string uid {get;set;}
-        public string message{get;set;}
+        public string brand { get; set; }
+        public string result { get; set; }
+        public string uid { get; set; }
+        public string message { get; set; }
     }
 
     public class HttpRequestWrapper

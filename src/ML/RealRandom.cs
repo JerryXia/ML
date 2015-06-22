@@ -1,24 +1,20 @@
-﻿using System;
-
-using System.Security.Cryptography;
-
-namespace ML
+﻿namespace ML
 {
-    public class CustomRandom : Random
+    public class RealRandom : System.Random
     {
-        private Random _random;
+        private System.Random _random;
 
-
-        public CustomRandom() : this(GetRandomSeed())
+        public RealRandom()
+            : this(GetRandomSeed())
         {
         }
 
-        public CustomRandom(int seed)
+        public RealRandom(int seed)
         {
-            _random = new Random(seed);
+            _random = new System.Random(seed);
         }
 
-
+        /*
         public override int Next()
         {
             return _random.Next();
@@ -35,14 +31,14 @@ namespace ML
         {
             return _random.NextDouble();
         }
+        */
 
-
-        static int GetRandomSeed()
+        public static int GetRandomSeed()
         {
             byte[] bytes = new byte[4];
-            var rng = new RNGCryptoServiceProvider();
+            var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
             rng.GetBytes(bytes);
-            return BitConverter.ToInt32(bytes, 0);
+            return System.BitConverter.ToInt32(bytes, 0);
         }
 
     }

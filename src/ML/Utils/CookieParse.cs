@@ -8,7 +8,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 
 
-namespace PPD.Weixin.Common.Utils
+namespace ML.Utils
 {
     public class CookieParse
     {
@@ -352,7 +352,7 @@ namespace PPD.Weixin.Common.Utils
             else
             {
                 //string invalidP = @"\W+";
-               
+
                 //Regex rx = new Regex(invalidP);
                 //Match foundInvalid = rx.Match(ckName);
                 //if (foundInvalid.Success)

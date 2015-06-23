@@ -14,6 +14,11 @@ namespace ML.Configuration
         private static int _level;
         private static T _applicationConfig;
 
+        //static ConfigManager()
+        //{
+
+        //}
+
         public static T Current
         {
             get

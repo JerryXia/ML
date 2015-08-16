@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
-using System.Web.Caching;
 
 namespace ML.Configuration
 {
-    internal sealed class FileMonitor
+    public sealed class FileMonitor
     {
         private IList<string> _filePaths;
-        private CacheItemRemovedCallback _cacheRemoveCallback;
+        private Action _cacheRemoveCallback;
 
-        public FileMonitor(IList<string> filePaths, CacheItemRemovedCallback cacheRemoveCallback)
+        public FileMonitor(string filePath, Action fileChangeCallback)
+        {
+            _filePaths = new List<string> { filePath };
+            _cacheRemoveCallback = fileChangeCallback;
+        }
+
+        public FileMonitor(IList<string> filePaths, Action fileChangeCallback)
         {
             _filePaths = filePaths;
-            _cacheRemoveCallback = cacheRemoveCallback;
+            _cacheRemoveCallback = fileChangeCallback;
         }
 
 
@@ -39,10 +44,11 @@ namespace ML.Configuration
             {
                 string cacheKey = GenerateCacheKey();
                 object cacheValue = GenerateCacheValue();
-                var dep = new CacheDependency(filePath);
+                var dep = new System.Web.Caching.CacheDependency(filePath);
 
-                HttpRuntime.Cache.Insert(cacheKey, cacheValue, dep, Cache.NoAbsoluteExpiration, Cache.NoSlidingExpiration,
-                    CacheItemPriority.NotRemovable, _cacheRemoveCallback);
+                HttpRuntime.Cache.Insert(cacheKey, cacheValue, dep, 
+                    System.Web.Caching.Cache.NoAbsoluteExpiration, System.Web.Caching.Cache.NoSlidingExpiration,
+                    System.Web.Caching.CacheItemPriority.NotRemovable, CacheItemRemovedCallback);
             }
         }
 
@@ -56,5 +62,18 @@ namespace ML.Configuration
         {
             return new Object();
         }
+
+
+        private void CacheItemRemovedCallback(string key, object value, System.Web.Caching.CacheItemRemovedReason reason)
+        {
+            /*
+             System.Web.Caching.CacheItemRemovedReason.Removed:
+             // 站点重启，应用程序池回收
+             System.Web.Caching.CacheItemRemovedReason.Expired:
+             // 正常时间到了
+             */
+            _cacheRemoveCallback();
+        }
+
     }
 }

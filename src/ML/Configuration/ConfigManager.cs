@@ -205,7 +205,7 @@ namespace ML.Configuration
             return options;
         }
 
-        private static void DefaultCacheRemovedCallback(string key, object value, CacheItemRemovedReason reason)
+        private static void DefaultCacheRemovedCallback()
         {
             // 由于事件发生时，文件可能还没有完全关闭，让程序等待50毫秒。
             System.Threading.Thread.Sleep(50);

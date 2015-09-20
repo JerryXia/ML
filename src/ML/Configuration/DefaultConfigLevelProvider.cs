@@ -2,6 +2,11 @@
 
 namespace ML.Configuration
 {
+    public interface IConfigLevelProvider
+    {
+        List<ConfigLevelItem> GetConfigLevels();
+    }
+
     public class DefaultConfigLevelProvider : IConfigLevelProvider
     {
         private List<ConfigLevelItem> list;

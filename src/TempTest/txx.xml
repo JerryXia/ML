@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Test1 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Id>1</Id>
+  <Data>11111</Data>
+  <Txt>txtxtxtxtxt</Txt>
+  <Bi>2015-09-10T17:00:57.9159647+08:00</Bi>
+  <Test2s>
+    <Test2>
+      <Id2>21</Id2>
+    </Test2>
+    <Test2>
+      <Id2>22</Id2>
+    </Test2>
+    <Test2>
+      <Id2>21</Id2>
+    </Test2>
+    <Test2>
+      <Id2>22</Id2>
+    </Test2>
+  </Test2s>
+  <Test2Arr>
+    <Test2>
+      <Id2>21</Id2>
+    </Test2>
+    <Test2>
+      <Id2>22</Id2>
+    </Test2>
+  </Test2Arr>
+</Test1>

@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Text;
+using ML.Configuration;
 using ML.Net.Http;
 using ML.Security;
 
@@ -221,7 +223,13 @@ namespace TempTest
             */
             #endregion
 
-            TestSecurity();
+            //TestSecurity();
+            ConfigManager<Test1>.Init(2);
+
+            string tempStr = ConfigManager<Test1>.Current.Txt;
+            long tempInt = ConfigManager<Test1>.Current.Data.HasValue ? ConfigManager<Test1>.Current.Data.Value : -1;
+            Console.WriteLine(tempStr);
+            Console.WriteLine(tempInt);
 
             Console.ReadKey();
         }
@@ -254,7 +262,6 @@ namespace TempTest
             Console.WriteLine(plainText);
             Console.WriteLine(cliperText1);
             Console.WriteLine(plainText2);
-
 
         }
 
@@ -343,6 +350,5 @@ namespace TempTest
         }
 
     }
-
 
 }

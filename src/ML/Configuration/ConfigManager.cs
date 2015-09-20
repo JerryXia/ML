@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Web.Caching;
 using System.Web.Script.Serialization;
+using System.Xml.Serialization;
 
 namespace ML.Configuration
 {
@@ -13,6 +16,7 @@ namespace ML.Configuration
         private static List<ConfigLevelItem> _configLevelList;
         private static int _level;
         private static T _applicationConfig;
+        private static int LoadCount = 0;
 
         //static ConfigManager()
         //{
@@ -43,7 +47,7 @@ namespace ML.Configuration
             else
             {
                 _level = level;
-                _applicationConfig = LoadApplicationConfigs();
+                LoadApplicationConfigs();
             }
         }
 
@@ -64,7 +68,7 @@ namespace ML.Configuration
             if (configLevelList != null && configLevelList.Count > 0)
             {
                 // todo check
-                _configLevelList = configLevelList;
+                _configLevelList = configLevelList; // 全局赋值
             }
             else
             {
@@ -72,31 +76,35 @@ namespace ML.Configuration
             }
         }
 
-        private static T LoadApplicationConfigs()
+        private static void LoadApplicationConfigs()
         {
             T options = new T();
-            string[] configFilePaths = ParseConfigFilePaths(options);
+            ParseConfigTypeResult parseConfigTypeResult = ParseConfigFilePaths(options);
 
-            for (int i = 0; i < configFilePaths.Length; i++)
+            var dictLoadResult = new ConcurrentDictionary<int, bool>();
+            for (int i = 0; i < parseConfigTypeResult.ConfigFilePaths.Length; i++)
             {
-                bool isExists = false;
-                T t1 = LoadApplicationConfigsFromFile(configFilePaths[i], out isExists);
+                var loadCfgFileResult = LoadApplicationConfigsFromFile(parseConfigTypeResult.ConfigFilePaths[i], 
+                    parseConfigTypeResult.CfgFileType);
 
-                if (isExists)
+                //dictLoadResult.TryAdd(i, loadCfgFileResult.HasError || loadCfgFileResult.FileExists == false);
+                // 比如定的是Release的Level, release的配置文件不存在, 基础配置生不生效？
+                dictLoadResult.TryAdd(i, loadCfgFileResult.HasError);
+                if (loadCfgFileResult.FileExists)
                 {
                     if (i == 0)
                     {
-                        options = t1;
+                        options = loadCfgFileResult.ConfigInstance;
                     }
                     else if (i == _level)
                     {
                         PropertyInfo[] pis0 = options.GetType().GetProperties();
-                        PropertyInfo[] pis1 = t1.GetType().GetProperties();
+                        PropertyInfo[] pis1 = loadCfgFileResult.ConfigInstance.GetType().GetProperties();
                         for (int j = 0; j < pis0.Length; j++)
                         {
                             if (pis0[j].CanWrite)
                             {
-                                var newValue = GetPropertyValue(t1, pis1, pis0[j].Name);
+                                var newValue = GetPropertyValue(loadCfgFileResult.ConfigInstance, pis1, pis0[j].Name);
                                 if (newValue != null)
                                 {
                                     pis0[j].SetValue(options, newValue, null);
@@ -113,17 +121,58 @@ namespace ML.Configuration
                 {
                     if (i == 0)
                     {
-                        // 检测默认文件是否存在，不存在则抛异常
-                        throw new FileNotFoundException(string.Format("{0} Not Found", configFilePaths[i]));
+                        // Init操作调用LoadApplicationConfigs，检测默认文件是否存在，不存在则抛异常
+                        throw new FileNotFoundException(string.Format("{0} Not Found", parseConfigTypeResult.ConfigFilePaths[i]));
                     }
                 }
             }
 
-            return options;
+            bool failed = false;
+            if (dictLoadResult.TryGetValue(0, out failed))
+            {
+                if(failed)
+                {
+                    if (LoadCount == 0)
+                    {
+                        //init
+                        throw new Exception(string.Format("{0} Parse Error", parseConfigTypeResult.ConfigFilePaths[0]));
+                    }
+                    else
+                    {
+                        //后续出现Error, Ignore.
+                    }
+                }
+                else
+                {
+                    if (dictLoadResult.TryGetValue(_level, out failed))
+                    {
+                        if (failed)
+                        {
+                            if (LoadCount == 0)
+                            {
+                                //init
+                                throw new Exception(string.Format("{0} Parse Error", parseConfigTypeResult.ConfigFilePaths[0]));
+                            }
+                            else
+                            {
+                                //后续出现Error, Ignore.
+                            }
+                        }
+                        else
+                        {
+                            _applicationConfig = options;
+                        }
+                    }
+                }
+            }
+
+            Interlocked.Increment(ref LoadCount);
         }
 
-        private static string[] ParseConfigFilePaths(T tEntity)
+        private static ParseConfigTypeResult ParseConfigFilePaths(T tEntity)
         {
+            var result = new ParseConfigTypeResult();
+
             string configFilePath = null;
             List<ConfigLevelItem> extraSettings = null;
 
@@ -131,8 +180,12 @@ namespace ML.Configuration
             ConfigFileNameAttribute cfgNameAttr = (ConfigFileNameAttribute)Attribute.GetCustomAttribute(entityType, typeof(ConfigFileNameAttribute));
             if (cfgNameAttr == null)
             {
+                ConfigFileType fileType = ConfigFileType.Json;
+                result.CfgFileType = fileType;
+
                 // 找默认同名的配置文件
-                configFilePath = CombineAppDataPaths(Constant.DEFAULT_CONFIGPATHDIR, entityType.Name + Constant.DEFAULT_EXTNAME);
+                configFilePath = CombineAppDataPaths(Constant.DEFAULT_CONFIGPATHDIR,
+                    String.Format("{0}.{1}", entityType.Name, fileType.ToString().ToLower()));
 
                 extraSettings = _configLevelList;
 
@@ -140,14 +193,16 @@ namespace ML.Configuration
                 arr[0] = configFilePath;
                 for (int i = 0; i < extraSettings.Count; i++)
                 {
-                    arr[i + 1] = CombineAppDataPaths(Constant.DEFAULT_CONFIGPATHDIR,
-                        string.Format("{0}.{1}{2}", entityType.Name, extraSettings[i].ConfigName, Constant.DEFAULT_EXTNAME));
+                    arr[i + 1] = CombineAppDataPaths(Constant.DEFAULT_CONFIGPATHDIR, String.Format("{0}.{1}.{2}",
+                        entityType.Name, extraSettings[i].ConfigName, fileType.ToString().ToLower()));
                 }
-                return arr;
+                result.ConfigFilePaths = arr;
             }
             else
             {
-                configFilePath = CombineAppDataPaths(cfgNameAttr.PathDirs, cfgNameAttr.CfgFileName);
+                result.CfgFileType = cfgNameAttr.CfgFileType;
+
+                configFilePath = CombineAppDataPaths(cfgNameAttr.PathDirs, cfgNameAttr.CfgFileName ?? entityType.Name);
 
                 extraSettings = cfgNameAttr.CfgLevelsProvider.GetConfigLevels();
                 if (extraSettings != null && extraSettings.Count > 0)
@@ -155,7 +210,7 @@ namespace ML.Configuration
                     bool isExists = extraSettings.FindIndex(q => q.Index == 0) > -1;
                     if (isExists)
                     {
-                        throw new Exception("IProjectConfigLevelProvider.GetConfigLevels() List<ProjectConfigLevelItem> can not has the default Index:1");
+                        throw new Exception("IProjectConfigLevelProvider.GetConfigLevels() List<ProjectConfigLevelItem> can not has the default Index:0");
                     }
                 }
 
@@ -163,11 +218,13 @@ namespace ML.Configuration
                 arr[0] = configFilePath;
                 for (int i = 0; i < extraSettings.Count; i++)
                 {
-                    arr[i + 1] = CombineAppDataPaths(cfgNameAttr.PathDirs, string.Format("{0}.{1}{2}",
-                        cfgNameAttr.CfgName, extraSettings[i].ConfigName, cfgNameAttr.ExtName));
+                    arr[i + 1] = CombineAppDataPaths(cfgNameAttr.PathDirs, 
+                        GenerateConfigFileName(cfgNameAttr, extraSettings[i].ConfigName));
                 }
-                return arr;
+                result.ConfigFilePaths = arr;
             }
+
+            return result;
         }
 
         private static object GetPropertyValue(object instance, PropertyInfo[] pis1, string pName)
@@ -184,34 +241,64 @@ namespace ML.Configuration
             return propertyValue;
         }
 
-        private static T LoadApplicationConfigsFromFile(string configFilePath, out bool fileExists)
+        private static LoadApplicationConfigsResult<T> LoadApplicationConfigsFromFile(string configFilePath, ConfigFileType fileType)
         {
-            T options = new T();
-
-            fileExists = File.Exists(configFilePath);
-            if (fileExists)
+            var result = new LoadApplicationConfigsResult<T>();
+            result.FileExists = File.Exists(configFilePath);
+            if (result.FileExists)
             {
-                string content = ReadFromFile(configFilePath);
-                var jss = new JavaScriptSerializer();
-                options = jss.Deserialize<T>(content);
+                try
+                {
+                    string content = ReadFromFile(configFilePath);
+
+                    switch (fileType)
+                    {
+                        case ConfigFileType.Xml:
+                            var encoding = Encoding.UTF8;
+                            var xs = new XmlSerializer(typeof(T));
+                            using (MemoryStream ms = new MemoryStream(encoding.GetBytes(content)))
+                            {
+                                using (StreamReader sr = new StreamReader(ms, encoding))
+                                {
+                                    result.ConfigInstance = (T)xs.Deserialize(sr);
+                                }
+                            }
+                            break;
+                        case ConfigFileType.Json:
+                            var jss = new JavaScriptSerializer();
+                            result.ConfigInstance = jss.Deserialize<T>(content);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    result.HasError = true;
+                    result.Error = ex;
+                }
+                finally
+                {
+                    
+                }
             }
 
             var fileMinitor = new FileMonitor(new List<string>
             {
                 configFilePath
-            }, DefaultCacheRemovedCallback);
+            }, ConfigFileChanged);
             fileMinitor.Init();
 
-            return options;
+            return result;
         }
 
-        private static void DefaultCacheRemovedCallback()
+        private static void ConfigFileChanged(FileChangedEventArgs e)
         {
-            // 由于事件发生时，文件可能还没有完全关闭，让程序等待50毫秒。
-            System.Threading.Thread.Sleep(50);
+            // 由于事件发生时，文件可能还没有完全关闭，让程序等待100毫秒。
+            System.Threading.Thread.Sleep(100);
 
             // 重新加载配置参数
-            _applicationConfig = LoadApplicationConfigs();
+            LoadApplicationConfigs();
         }
 
         private static string CombineAppDataPaths(string[] paths, string fileName)
@@ -231,18 +318,47 @@ namespace ML.Configuration
             return Path.Combine(pathsArr);
         }
 
+        private static string GenerateConfigFileName(ConfigFileNameAttribute cfgNameAttr, string configLevelName)
+        {
+            bool hasPoint = cfgNameAttr.CfgFileName.IndexOf('.') > -1;
+            if(hasPoint)
+            {
+                string[] tempArray = cfgNameAttr.CfgFileName.Split('.');
+                string[] newArray = new string[tempArray.Length + 1];
+                for (int i = 0; i < tempArray.Length; i++)
+                {
+                    if(i < tempArray.Length - 1)
+                    {
+                        newArray[i] = tempArray[i];
+                    }
+                    else
+                    {
+                        newArray[i] = configLevelName;
+                    }
+                }
+                newArray[tempArray.Length] = tempArray[tempArray.Length - 1];
+
+                return String.Join(".", newArray);
+            }
+            else
+            {
+                return String.Format("{0}.{1}", cfgNameAttr.CfgFileName, configLevelName);
+            }
+        }
+
         private static string ReadFromFile(string filePath)
         {
             if (File.Exists(filePath))
             {
-                var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-                int bufferLen = (int)fs.Length;
-                byte[] buffers = new byte[bufferLen];
-                fs.Position = 0;
-                fs.Read(buffers, 0, bufferLen);
-                fs.Close();
-                fs.Dispose();
-                return Encoding.UTF8.GetString(buffers);
+                //var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                //int bufferLen = (int)fs.Length;
+                //byte[] buffers = new byte[bufferLen];
+                //fs.Position = 0;
+                //fs.Read(buffers, 0, bufferLen);
+                //fs.Close();
+                //fs.Dispose();
+                //return Encoding.UTF8.GetString(buffers);
+                return File.ReadAllText(filePath, Encoding.UTF8);
             }
             return string.Empty;
         }

@@ -6,56 +6,99 @@ namespace ML.Configuration
     public class ConfigFileNameAttribute : Attribute
     {
 
-        public ConfigFileNameAttribute(string configName)
-            : this(configName, Constant.DEFAULT_CONFIGPATHDIR, Constant.DEFAULT_EXTNAME, new DefaultConfigLevelProvider())
+        public ConfigFileNameAttribute(string configFileName)
+            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, ConfigFileType.Json, typeof(DefaultConfigLevelProvider))
         {
         }
 
-        public ConfigFileNameAttribute(string configName, IConfigLevelProvider cfgLevels)
-            : this(configName, Constant.DEFAULT_CONFIGPATHDIR, Constant.DEFAULT_EXTNAME, cfgLevels)
+        public ConfigFileNameAttribute(string configFileName, string[] pathDirs)
+            : this(configFileName, pathDirs, ConfigFileType.Json, typeof(DefaultConfigLevelProvider))
         {
         }
 
-        public ConfigFileNameAttribute(string configName, string[] pathDirs)
-            : this(configName, pathDirs, Constant.DEFAULT_EXTNAME, new DefaultConfigLevelProvider())
+        public ConfigFileNameAttribute(string configFileName, string[] pathDirs, ConfigFileType fileType)
+            : this(configFileName, pathDirs, fileType, typeof(DefaultConfigLevelProvider))
         {
         }
 
-        public ConfigFileNameAttribute(string configName, string[] pathDirs, IConfigLevelProvider cfgLevels)
-            : this(configName, pathDirs, Constant.DEFAULT_EXTNAME, cfgLevels)
+        public ConfigFileNameAttribute(string configFileName, string[] pathDirs, Type cfgLevels)
+            : this(configFileName, pathDirs, ConfigFileType.Json, cfgLevels)
         {
         }
 
-        public ConfigFileNameAttribute(string configName, string extName)
-            : this(configName, Constant.DEFAULT_CONFIGPATHDIR, extName, new DefaultConfigLevelProvider())
+        public ConfigFileNameAttribute(string configFileName, ConfigFileType fileType)
+            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, fileType, typeof(DefaultConfigLevelProvider))
         {
         }
 
-        public ConfigFileNameAttribute(string configName, string extName, IConfigLevelProvider cfgLevels)
-            : this(configName, Constant.DEFAULT_CONFIGPATHDIR, extName, cfgLevels)
+        public ConfigFileNameAttribute(string configFileName, ConfigFileType fileType, Type cfgLevels)
+            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, fileType, cfgLevels)
         {
         }
 
-        public ConfigFileNameAttribute(string configName, string[] pathDirs, string extName, IConfigLevelProvider cfgLevels)
+        public ConfigFileNameAttribute(string configFileName, Type cfgLevels)
+            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, ConfigFileType.Json, cfgLevels)
         {
-            this.PathDirs = pathDirs;
-            this.CfgName = configName;
-            this.ExtName = "." + extName.TrimStart('.');
-            this.CfgLevelsProvider = cfgLevels;
         }
 
-        public string[] PathDirs { get; private set; }
-
-        public string CfgName { get; private set; }
-        public string ExtName { get; private set; }
-        public string CfgFileName
+        public ConfigFileNameAttribute(string[] pathDirs, ConfigFileType fileType)
+            : this(null, pathDirs, fileType, typeof(DefaultConfigLevelProvider))
         {
-            get
+        }
+
+        public ConfigFileNameAttribute(string[] pathDirs, ConfigFileType fileType, Type cfgLevels)
+            : this(null, pathDirs, fileType, cfgLevels)
+        {
+        }
+
+        public ConfigFileNameAttribute(string[] pathDirs, Type cfgLevels)
+            : this(null, pathDirs, ConfigFileType.Json, cfgLevels)
+        {
+        }
+
+        public ConfigFileNameAttribute(ConfigFileType fileType, Type cfgLevels)
+            : this(null, Constant.DEFAULT_CONFIGPATHDIR, fileType, cfgLevels)
+        {
+        }
+
+        public ConfigFileNameAttribute(string configFileName, string[] pathDirs, ConfigFileType fileType, Type cfgLevels)
+        {
+            if (String.IsNullOrWhiteSpace(configFileName))
             {
-                return this.CfgName + this.ExtName;
+                throw new ArgumentNullException("configName can not be null or empty.");
+            }
+
+            switch (fileType)
+            {
+                case ConfigFileType.Xml:
+                case ConfigFileType.Json:
+                    //
+                    break;
+                case ConfigFileType.UnKnown:
+                default:
+                    throw new ArgumentNullException("fileType invalid.");
+                    //break;
+            }
+
+            this.PathDirs = pathDirs;
+            this.CfgFileName = configFileName;
+            this.CfgFileType = fileType;
+
+            bool isAssign = typeof(IConfigLevelProvider).IsAssignableFrom(cfgLevels);
+            if (isAssign)
+            {
+                object obj = Activator.CreateInstance(cfgLevels);
+                this.CfgLevelsProvider = obj as IConfigLevelProvider;
+            }
+            else
+            {
+                throw new ArgumentException("cfgLevels Type is invalid.");
             }
         }
 
+        public string[] PathDirs { get; private set; }
+        public string CfgFileName { get; private set; }
+        public ConfigFileType CfgFileType { get; private set; }
         public IConfigLevelProvider CfgLevelsProvider { get; private set; }
 
     }

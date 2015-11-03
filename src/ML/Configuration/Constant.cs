@@ -5,7 +5,9 @@ namespace ML.Configuration
 {
     internal sealed class Constant
     {
-        public static readonly string[] DEFAULT_CONFIGPATHDIR = { "App_Data", "Configs" };
+        public static readonly string[] Default_RelativeDirNames = { "App_Data", "Configs" };
+
+        public const ConfigFileType Default_ConfigFileType = ConfigFileType.Json;
 
         public static readonly string Application_Dir = 
             AppDomain.CurrentDomain.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar);

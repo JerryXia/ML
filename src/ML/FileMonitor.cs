@@ -56,26 +56,17 @@ namespace ML
             if (!string.IsNullOrEmpty(filePath))
             {
                 string cacheKey = GenerateCacheKey();
-                //object cacheValue = filePath;//GenerateCacheValue();
                 var dep = new System.Web.Caching.CacheDependency(filePath);
-
                 HttpRuntime.Cache.Insert(cacheKey, filePath, dep, 
                     System.Web.Caching.Cache.NoAbsoluteExpiration, System.Web.Caching.Cache.NoSlidingExpiration,
                     System.Web.Caching.CacheItemPriority.NotRemovable, CacheItemRemovedCallback);
             }
         }
 
-
         private string GenerateCacheKey()
         {
             return Guid.NewGuid().ToString();
         }
-
-        //private object GenerateCacheValue()
-        //{
-        //    return new Object();
-        //}
-
 
         private void CacheItemRemovedCallback(string key, object value, System.Web.Caching.CacheItemRemovedReason reason)
         {

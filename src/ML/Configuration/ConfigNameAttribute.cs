@@ -5,14 +5,19 @@ namespace ML.Configuration
     [AttributeUsage(AttributeTargets.Class)]
     public class ConfigFileNameAttribute : Attribute
     {
+        // 可以直接不加特性，直接去默认值
+        //public ConfigFileNameAttribute()
+        //    : this(null, Constant.Default_RelativeDirNames, Constant.ConfigFile_DefaultType, typeof(DefaultConfigLevelProvider))
+        //{
+        //}
 
         public ConfigFileNameAttribute(string configFileName)
-            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, ConfigFileType.Json, typeof(DefaultConfigLevelProvider))
+            : this(configFileName, Constant.Default_RelativeDirNames, Constant.Default_ConfigFileType, typeof(DefaultConfigLevelProvider))
         {
         }
 
         public ConfigFileNameAttribute(string configFileName, string[] pathDirs)
-            : this(configFileName, pathDirs, ConfigFileType.Json, typeof(DefaultConfigLevelProvider))
+            : this(configFileName, pathDirs, Constant.Default_ConfigFileType, typeof(DefaultConfigLevelProvider))
         {
         }
 
@@ -22,22 +27,27 @@ namespace ML.Configuration
         }
 
         public ConfigFileNameAttribute(string configFileName, string[] pathDirs, Type cfgLevels)
-            : this(configFileName, pathDirs, ConfigFileType.Json, cfgLevels)
+            : this(configFileName, pathDirs, Constant.Default_ConfigFileType, cfgLevels)
         {
         }
 
         public ConfigFileNameAttribute(string configFileName, ConfigFileType fileType)
-            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, fileType, typeof(DefaultConfigLevelProvider))
+            : this(configFileName, Constant.Default_RelativeDirNames, fileType, typeof(DefaultConfigLevelProvider))
         {
         }
 
-        public ConfigFileNameAttribute(string configFileName, ConfigFileType fileType, Type cfgLevels)
-            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, fileType, cfgLevels)
+        public ConfigFileNameAttribute(string configFileName, ConfigFileType fileType, Type levelsProvider)
+            : this(configFileName, Constant.Default_RelativeDirNames, fileType, levelsProvider)
         {
         }
 
-        public ConfigFileNameAttribute(string configFileName, Type cfgLevels)
-            : this(configFileName, Constant.DEFAULT_CONFIGPATHDIR, ConfigFileType.Json, cfgLevels)
+        public ConfigFileNameAttribute(string configFileName, Type levelsProvider)
+            : this(configFileName, Constant.Default_RelativeDirNames, Constant.Default_ConfigFileType, levelsProvider)
+        {
+        }
+
+        public ConfigFileNameAttribute(string[] pathDirs)
+            : this(null, pathDirs, Constant.Default_ConfigFileType, typeof(DefaultConfigLevelProvider))
         {
         }
 
@@ -46,26 +56,26 @@ namespace ML.Configuration
         {
         }
 
-        public ConfigFileNameAttribute(string[] pathDirs, ConfigFileType fileType, Type cfgLevels)
-            : this(null, pathDirs, fileType, cfgLevels)
+        public ConfigFileNameAttribute(string[] pathDirs, ConfigFileType fileType, Type levelsProvider)
+            : this(null, pathDirs, fileType, levelsProvider)
         {
         }
 
-        public ConfigFileNameAttribute(string[] pathDirs, Type cfgLevels)
-            : this(null, pathDirs, ConfigFileType.Json, cfgLevels)
+        public ConfigFileNameAttribute(string[] pathDirs, Type levelsProvider)
+            : this(null, pathDirs, Constant.Default_ConfigFileType, levelsProvider)
         {
         }
 
-        public ConfigFileNameAttribute(ConfigFileType fileType, Type cfgLevels)
-            : this(null, Constant.DEFAULT_CONFIGPATHDIR, fileType, cfgLevels)
+        public ConfigFileNameAttribute(ConfigFileType fileType, Type levelsProvider)
+            : this(null, Constant.Default_RelativeDirNames, fileType, levelsProvider)
         {
         }
 
-        public ConfigFileNameAttribute(string configFileName, string[] pathDirs, ConfigFileType fileType, Type cfgLevels)
+        public ConfigFileNameAttribute(string configFileName, string[] pathDirs, ConfigFileType fileType, Type levelsProvider)
         {
             if (String.IsNullOrWhiteSpace(configFileName))
             {
-                throw new ArgumentNullException("configName can not be null or empty.");
+                throw new ArgumentNullException("configFileName can not be null or empty.");
             }
 
             switch (fileType)
@@ -80,26 +90,26 @@ namespace ML.Configuration
                     //break;
             }
 
-            this.PathDirs = pathDirs;
-            this.CfgFileName = configFileName;
-            this.CfgFileType = fileType;
+            this.RelativeDirNames = pathDirs;
+            this.Name = configFileName;
+            this.Type = fileType;
 
-            bool isAssign = typeof(IConfigLevelProvider).IsAssignableFrom(cfgLevels);
+            bool isAssign = typeof(IConfigLevelProvider).IsAssignableFrom(levelsProvider);
             if (isAssign)
             {
-                object obj = Activator.CreateInstance(cfgLevels);
-                this.CfgLevelsProvider = obj as IConfigLevelProvider;
+                object obj = Activator.CreateInstance(levelsProvider);
+                this.LevelsProvider = obj as IConfigLevelProvider;
             }
             else
             {
-                throw new ArgumentException("cfgLevels Type is invalid.");
+                throw new ArgumentException("LevelsProvider Type is invalid.");
             }
         }
 
-        public string[] PathDirs { get; private set; }
-        public string CfgFileName { get; private set; }
-        public ConfigFileType CfgFileType { get; private set; }
-        public IConfigLevelProvider CfgLevelsProvider { get; private set; }
+        public string[] RelativeDirNames { get; private set; }
+        public string Name { get; private set; }
+        public ConfigFileType Type { get; private set; }
+        public IConfigLevelProvider LevelsProvider { get; private set; }
 
     }
 }

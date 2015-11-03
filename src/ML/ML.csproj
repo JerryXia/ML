@@ -49,11 +49,6 @@
     <Compile Include="Configuration\DefaultConfigLevelProvider.cs" />
     <Compile Include="FileMonitor.cs" />
     <Compile Include="Configuration\ConfigLevelItem.cs" />
-    <Compile Include="LibResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>LibResource.resx</DependentUpon>
-    </Compile>
     <Compile Include="Net\Http\CookieParser.cs" />
     <Compile Include="Net\Http\HttpRequestDataMode.cs" />
     <Compile Include="Net\Http\HttpRequest.cs" />
@@ -63,22 +58,12 @@
     <Compile Include="Net\Http\HttpResponseDataType.cs" />
     <Compile Include="Security\AesCryptoService.cs" />
     <Compile Include="Security\Md5CryptoService.cs" />
-    <Compile Include="Uitls\CpuInfo.cs" />
     <Compile Include="Url.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RealRandom.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Extensions\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="LibResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>LibResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\cpuinfo.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

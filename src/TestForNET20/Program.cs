@@ -7,13 +7,18 @@ using ML.Utils;
 using System.Security.AccessControl;
 using System.IO.MemoryMappedFiles;
 using System.Threading;
+using ML.Net.Http;
 
 namespace TestForNET20
 {
     class Program
     {
+        static ManualResetEvent allDone = new ManualResetEvent(false);
+
         static void Main(string[] args)
         {
+            ThreadPool.SetMaxThreads(1024, 1024);
+
             switch (args[0])
             {
                 case "w":
@@ -33,9 +38,50 @@ namespace TestForNET20
                     }
                     break;
                 default:
-                    Console.WriteLine("None");
+                    TestUri(RequestMethod.GET, "http://www.cnblogs.com/robots.txt", "");
+                    TestUri(RequestMethod.GET, "http://www.guqiankun.com/robots.txt");
+                    TestUri(RequestMethod.GET, "http://blog.guqiankun.com/robots.txt", "");
+
+                    Console.ReadKey();
                     break;
             }
+        }
+
+        static void TestUri(RequestMethod method, string uri)
+        {
+            var requestSetting = new RequestSetting(method, uri);
+            var requestState = new RequestState();
+            requestState.Setting = requestSetting;
+            requestState.Completed += new EventHandler<RequestCompeleteEventArgs>(RequestCompleted);
+
+            var request = new Request();
+            request.Send(requestState);
+        }
+
+        static void TestUri(RequestMethod method, string uri, string postData)
+        {
+            var requestSetting = new RequestSetting(method, uri);
+            requestSetting.PostData = Encoding.UTF8.GetBytes(postData);
+            var requestState = new RequestState();
+            requestState.Setting = requestSetting;
+            requestState.Completed += new EventHandler<RequestCompeleteEventArgs>(RequestCompleted);
+
+            var request = new Request();
+            request.Send(requestState);
+        }
+
+        static void RequestCompleted(object sender, RequestCompeleteEventArgs e)
+        {
+            var requestState = sender as RequestState;
+            Console.WriteLine(e.HasError);
+            Console.WriteLine(e.WebError);
+            Console.WriteLine(e.ExtraError);
+
+            Console.WriteLine(e.Resposne.StatusCode);
+            Console.WriteLine(e.Resposne.StatusDescription);
+            string result;
+            Console.WriteLine(e.Resposne.TryGetStringResult(Encoding.UTF8, out result));
+            Console.WriteLine(result);
         }
 
         static void Write(int p1, int p2, string p3, string filePath)

@@ -223,13 +223,26 @@ namespace TempTest
             */
             #endregion
 
-            //TestSecurity();
-            ConfigManager<Test1>.Init(2);
+            #region 6
 
-            string tempStr = ConfigManager<Test1>.Current.Txt;
-            long tempInt = ConfigManager<Test1>.Current.Data.HasValue ? ConfigManager<Test1>.Current.Data.Value : -1;
-            Console.WriteLine(tempStr);
-            Console.WriteLine(tempInt);
+            //string content = "{ \"CreateTime\": \"2015-10-10\" }";
+            //var jss = new System.Web.Script.Serialization.JavaScriptSerializer();
+            //var item = jss.Deserialize<SsoLoginCallback>(content);
+            //Console.WriteLine(item.CreateTime);
+            //item.CreateTime = DateTime.Now;
+            //string c1 = jss.Serialize(item);
+
+            ////TestSecurity();
+            //ConfigManager<Test1>.Init(2);
+
+            //string tempStr = ConfigManager<Test1>.Current.Txt;
+            //long tempInt = ConfigManager<Test1>.Current.Data.HasValue ? ConfigManager<Test1>.Current.Data.Value : -1;
+            //Console.WriteLine(tempStr);
+            //Console.WriteLine(tempInt);
+
+            #endregion
+
+
 
             Console.ReadKey();
         }
@@ -239,7 +252,6 @@ namespace TempTest
             DateTime origin = new DateTime(1970, 1, 1);
             return Convert.ToInt64((time - origin).TotalMilliseconds);
         }
-
 
         static void TestSecurity()
         {
@@ -267,12 +279,13 @@ namespace TempTest
 
     }
 
-    class SsoLoginCallback
+    public class SsoLoginCallback
     {
         public string brand { get; set; }
         public string result { get; set; }
         public string uid { get; set; }
         public string message { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 
     public class HttpRequestWrapper

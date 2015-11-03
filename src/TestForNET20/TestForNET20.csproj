@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="HttpHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -60,6 +61,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ML.Net.Http\ML.Net.Http.csproj">
+      <Project>{efd80a26-ed5e-456a-b356-ac8e44876286}</Project>
+      <Name>ML.Net.Http</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ML.Utils\ML.Utils.csproj">
       <Project>{9e901e94-e091-4736-b1be-162cc95988ed}</Project>
       <Name>ML.Utils</Name>

@@ -18,11 +18,6 @@ namespace ML.Configuration
         private static T _applicationConfig;
         private static int LoadCount = 0;
 
-        //static ConfigManager()
-        //{
-
-        //}
-
         public static T Current
         {
             get
@@ -134,7 +129,7 @@ namespace ML.Configuration
                 {
                     if (LoadCount == 0)
                     {
-                        //init
+                        //init时发现失败，抛Exception
                         throw new Exception(string.Format("{0} Parse Error", parseConfigTypeResult.ConfigFilePaths[0]));
                     }
                     else
@@ -171,21 +166,20 @@ namespace ML.Configuration
 
         private static ParseConfigTypeResult ParseConfigFilePaths(T tEntity)
         {
-            var result = new ParseConfigTypeResult();
+            ParseConfigTypeResult result = new ParseConfigTypeResult();
 
             string configFilePath = null;
             List<ConfigLevelItem> extraSettings = null;
 
             Type entityType = tEntity.GetType();
-            ConfigFileNameAttribute cfgNameAttr = (ConfigFileNameAttribute)Attribute.GetCustomAttribute(entityType, typeof(ConfigFileNameAttribute));
-            if (cfgNameAttr == null)
+            ConfigFileNameAttribute cfgFileNameAttr = (ConfigFileNameAttribute)Attribute.GetCustomAttribute(entityType, typeof(ConfigFileNameAttribute));
+            if (cfgFileNameAttr == null)
             {
-                ConfigFileType fileType = ConfigFileType.Json;
-                result.CfgFileType = fileType;
+                result.CfgFileType = Constant.Default_ConfigFileType;
 
                 // 找默认同名的配置文件
-                configFilePath = CombineAppDataPaths(Constant.DEFAULT_CONFIGPATHDIR,
-                    String.Format("{0}.{1}", entityType.Name, fileType.ToString().ToLower()));
+                configFilePath = CombineAppDataPaths(Constant.Default_RelativeDirNames,
+                    String.Format("{0}.{1}", entityType.Name, Constant.Default_ConfigFileType.ToString().ToLower()));
 
                 extraSettings = _configLevelList;
 
@@ -193,18 +187,18 @@ namespace ML.Configuration
                 arr[0] = configFilePath;
                 for (int i = 0; i < extraSettings.Count; i++)
                 {
-                    arr[i + 1] = CombineAppDataPaths(Constant.DEFAULT_CONFIGPATHDIR, String.Format("{0}.{1}.{2}",
-                        entityType.Name, extraSettings[i].ConfigName, fileType.ToString().ToLower()));
+                    arr[i + 1] = CombineAppDataPaths(Constant.Default_RelativeDirNames, String.Format("{0}.{1}.{2}",
+                        entityType.Name, extraSettings[i].ConfigName, Constant.Default_ConfigFileType.ToString().ToLower()));
                 }
                 result.ConfigFilePaths = arr;
             }
             else
             {
-                result.CfgFileType = cfgNameAttr.CfgFileType;
+                result.CfgFileType = cfgFileNameAttr.Type;
 
-                configFilePath = CombineAppDataPaths(cfgNameAttr.PathDirs, cfgNameAttr.CfgFileName ?? entityType.Name);
+                configFilePath = CombineAppDataPaths(cfgFileNameAttr.RelativeDirNames, cfgFileNameAttr.Name ?? entityType.Name);
 
-                extraSettings = cfgNameAttr.CfgLevelsProvider.GetConfigLevels();
+                extraSettings = cfgFileNameAttr.LevelsProvider.GetConfigLevels();
                 if (extraSettings != null && extraSettings.Count > 0)
                 {
                     bool isExists = extraSettings.FindIndex(q => q.Index == 0) > -1;
@@ -218,8 +212,8 @@ namespace ML.Configuration
                 arr[0] = configFilePath;
                 for (int i = 0; i < extraSettings.Count; i++)
                 {
-                    arr[i + 1] = CombineAppDataPaths(cfgNameAttr.PathDirs, 
-                        GenerateConfigFileName(cfgNameAttr, extraSettings[i].ConfigName));
+                    arr[i + 1] = CombineAppDataPaths(cfgFileNameAttr.RelativeDirNames,
+                        GenerateConfigFileName(cfgFileNameAttr, extraSettings[i].ConfigName));
                 }
                 result.ConfigFilePaths = arr;
             }
@@ -283,10 +277,7 @@ namespace ML.Configuration
                 }
             }
 
-            var fileMinitor = new FileMonitor(new List<string>
-            {
-                configFilePath
-            }, ConfigFileChanged);
+            var fileMinitor = new FileMonitor(configFilePath, new FileChangedHandler(ConfigFileChanged));
             fileMinitor.Init();
 
             return result;
@@ -294,8 +285,8 @@ namespace ML.Configuration
 
         private static void ConfigFileChanged(FileChangedEventArgs e)
         {
-            // 由于事件发生时，文件可能还没有完全关闭，让程序等待100毫秒。
-            System.Threading.Thread.Sleep(100);
+            // 由于事件发生时，文件可能还没有完全关闭，让程序等待50毫秒。
+            System.Threading.Thread.Sleep(50);
 
             // 重新加载配置参数
             LoadApplicationConfigs();
@@ -318,12 +309,12 @@ namespace ML.Configuration
             return Path.Combine(pathsArr);
         }
 
-        private static string GenerateConfigFileName(ConfigFileNameAttribute cfgNameAttr, string configLevelName)
+        private static string GenerateConfigFileName(ConfigFileNameAttribute cfgFileNameAttr, string configLevelName)
         {
-            bool hasPoint = cfgNameAttr.CfgFileName.IndexOf('.') > -1;
+            bool hasPoint = cfgFileNameAttr.Name.IndexOf('.') > -1;
             if(hasPoint)
             {
-                string[] tempArray = cfgNameAttr.CfgFileName.Split('.');
+                string[] tempArray = cfgFileNameAttr.Name.Split('.');
                 string[] newArray = new string[tempArray.Length + 1];
                 for (int i = 0; i < tempArray.Length; i++)
                 {
@@ -342,7 +333,7 @@ namespace ML.Configuration
             }
             else
             {
-                return String.Format("{0}.{1}", cfgNameAttr.CfgFileName, configLevelName);
+                return String.Format("{0}.{1}", cfgFileNameAttr.Name, configLevelName);
             }
         }
 

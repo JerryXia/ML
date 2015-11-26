@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ML.WinForm</RootNamespace>
     <AssemblyName>ML.WinForm</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -39,6 +39,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ControlExtensions.cs" />
+    <Compile Include="Extensions\Misc.cs" />
     <Compile Include="Helper\ComputerHardWareInfo.cs" />
     <Compile Include="Helper\KeyBoardHelper.cs" />
     <Compile Include="Helper\KeyboardHook.cs" />

@@ -1,0 +1,42 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+
+@section head{
+    @Html.Partial("_EasyUIHead")
+}
+
+@*<div class="easyui-layout panel-noscroll" style="height:600px">*@
+    <div data-options="region:'north'" style="height:50px"></div>
+    <div data-options="region:'west',split:true" title="菜单" style="width:17%">
+        <div class="easyui-accordion" style="height:100%">
+            <div title="About" data-options="iconCls:'icon-ok'" style="overflow:auto;padding:10px;">
+                <h3 style="color:#0099FF;">Accordion for jQuery</h3>
+                <p>Accordion is a part of easyui framework for jQuery. It lets you define your accordion component on web page more easily.</p>
+            </div>
+            <div title="Help" data-options="iconCls:'icon-help'" style="padding:10px;">
+                <p>The accordion allows you to provide multiple panels and display one or more at a time. Each panel has built-in support for expanding and collapsing. Clicking on a panel header to expand or collapse that panel body. The panel content can be loaded via ajax by specifying a 'href' property. Users can define a panel to be selected. If it is not specified, then the first panel is taken by default.</p>         
+            </div>
+            <div title="Ajax" data-options="href:'http://www.jeasyui.com/demo/main/_content.html'" style="padding:10px"></div>
+        </div>
+    </div>
+    <div data-options="region:'center',split:true" title="主界面" style="padding:20px">
+        <table id="dg" title="My Users" class="easyui-datagrid" style="width:700px;height:250px"
+                url="get_users.php" toolbar="#toolbar" pagination="true" rownumbers="true" fitColumns="true" singleSelect="true">
+            <thead>
+                <tr>
+                    <th field="firstname" width="50">First Name</th>
+                    <th field="lastname" width="50">Last Name</th>
+                    <th field="phone" width="50">Phone</th>
+                    <th field="email" width="50">Email</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <div data-options="region:'east',split:true" title="右侧附加" style="width:13%"></div>
+    <div data-options="region:'south',split:true,border:false" style="height:10px;"></div>
+@*</div>*@
+
+@section body{
+    @Html.Partial("_EasyUIBody")
+}

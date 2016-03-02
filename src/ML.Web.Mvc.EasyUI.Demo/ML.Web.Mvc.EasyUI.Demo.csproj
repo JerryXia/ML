@@ -113,6 +113,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\SystemManagerController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -123,58 +124,6 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\css\base.css" />
-    <Content Include="Content\jquery-easyui-1.4.4\changelog.txt" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\accordion\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\accordion\header.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\accordion\_content.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\animation\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\animation\fade.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\animation\pop.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\animation\slide.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\badge\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\badge\button.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\badge\list.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\badge\tabs.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\button\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\button\group.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\button\style.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\button\switch.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\datagrid\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\datagrid\rowediting.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\datalist\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\datalist\group.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\datalist\selection.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\dialog\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\dialog\message.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\form\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\images\login1.jpg" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\images\modem.png" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\images\more.png" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\images\pda.png" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\images\scanner.png" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\images\tablet.png" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\input\numberspinner.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\input\textbox.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\layout\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\menu\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\menu\menubar.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\panel\ajax.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\panel\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\panel\nav.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\panel\_content.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\simplelist\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\simplelist\button.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\simplelist\group.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\simplelist\image.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\simplelist\link.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\tabs\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\tabs\nav.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\tabs\pill.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\toolbar\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\toolbar\button.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\toolbar\menu.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\tree\basic.html" />
-    <Content Include="Content\jquery-easyui-1.4.4\demo-mobile\tree\dnd.html" />
     <Content Include="Content\jquery-easyui-1.4.4\demo\accordion\actions.html" />
     <Content Include="Content\jquery-easyui-1.4.4\demo\accordion\ajax.html" />
     <Content Include="Content\jquery-easyui-1.4.4\demo\accordion\basic.html" />
@@ -424,7 +373,6 @@
     <Content Include="Content\jquery-easyui-1.4.4\jquery.easyui.min.js" />
     <Content Include="Content\jquery-easyui-1.4.4\jquery.easyui.mobile.js" />
     <Content Include="Content\jquery-easyui-1.4.4\jquery.min.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\license_freeware.txt" />
     <Content Include="Content\jquery-easyui-1.4.4\locale\easyui-lang-af.js" />
     <Content Include="Content\jquery-easyui-1.4.4\locale\easyui-lang-am.js" />
     <Content Include="Content\jquery-easyui-1.4.4\locale\easyui-lang-ar.js" />
@@ -491,24 +439,6 @@
     <Content Include="Content\jquery-easyui-1.4.4\plugins\jquery.treegrid.js" />
     <Content Include="Content\jquery-easyui-1.4.4\plugins\jquery.validatebox.js" />
     <Content Include="Content\jquery-easyui-1.4.4\plugins\jquery.window.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\readme.txt" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\easyloader.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.accordion.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.calendar.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.combobox.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.datebox.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.draggable.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.droppable.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.form.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.linkbutton.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.menu.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.parser.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.progressbar.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.propertygrid.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.resizable.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.slider.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.tabs.js" />
-    <Content Include="Content\jquery-easyui-1.4.4\src\jquery.window.js" />
     <Content Include="Content\jquery-easyui-1.4.4\themes\black\accordion.css" />
     <Content Include="Content\jquery-easyui-1.4.4\themes\black\calendar.css" />
     <Content Include="Content\jquery-easyui-1.4.4\themes\black\combo.css" />
@@ -813,6 +743,21 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Views\Home\Index.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_Layout.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\_ViewStart.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_EasyUIHead.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Shared\_EasyUIBody.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Content\jquery-easyui-1.4.4\demo\accordion\datagrid_data1.json" />
     <Content Include="Content\jquery-easyui-1.4.4\demo\combobox\combobox_data1.json" />
     <Content Include="Content\jquery-easyui-1.4.4\demo\combobox\combobox_data2.json" />
@@ -833,21 +778,6 @@
     <Content Include="Content\jquery-easyui-1.4.4\demo\treegrid\treegrid_data3.json" />
     <Content Include="Content\jquery-easyui-1.4.4\demo\tree\tree_data1.json" />
     <Content Include="Content\jquery-easyui-1.4.4\demo\tree\tree_data2.json" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Home\Index.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_Layout.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\_ViewStart.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_EasyUIHead.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Shared\_EasyUIBody.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
